@@ -1,0 +1,67 @@
+<!-- test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JWT WebSocket 테스트</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Login</h2>
+<input type="text" id="deviceId" placeholder="Device ID">
+<input type="text" id="nickname" placeholder="Nickname">
+<button onclick="login()">Login</button>
+
+<h2>Chat</h2>
+<input type="text" id="message">
+<button onclick="sendMessage()">Send</button>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient;
+
+    function login() {
+        const deviceId = document.getElementById('deviceId').value;
+        const nickname = document.getElementById('nickname').value;
+
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId, nickname })
+        })
+            .then(res => res.json())
+            .then(data => {
+                // 토큰 저장
+                localStorage.setItem('jwt', data.token);
+                alert("로그인 성공! 토큰 저장됨");
+                connectSocket();
+            })
+            .catch(console.error);
+    }
+
+    function connectSocket() {
+        const token = localStorage.getItem('jwt');
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect(
+            { Authorization: 'Bearer ' + token },  // ✅ 토큰을 헤더로 전달
+            (frame) => {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/messages', (msg) => {
+                    console.log("Received: ", msg.body);
+                });
+            },
+            (error) => {
+                console.error("WebSocket 연결 실패: ", error);
+            }
+        );
+    }
+
+    function sendMessage() {
+        const message = document.getElementById('message').value;
+        stompClient.send("/app/message", {}, JSON.stringify({ content: message }));
+    }
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.tentalk.domain;
+package com.tentalk.etc.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Table(name = "reports")
 public class Report {
 
     @Column(name = "report_id")

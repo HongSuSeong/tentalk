@@ -1,3 +1,10 @@
 spring :
   application :
     name : tentalk
+  profiles:
+    active: dev
+
+jwt:
+  secret: ${JWT_SECRET}
+
+

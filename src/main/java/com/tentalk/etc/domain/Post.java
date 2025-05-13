@@ -1,4 +1,4 @@
-package com.tentalk.domain;
+package com.tentalk.etc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "posts")
 public class Post {
 
     @Column(name = "post_id")

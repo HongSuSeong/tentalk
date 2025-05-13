@@ -1,4 +1,4 @@
-package com.tentalk.domain;
+package com.tentalk.etc.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Table(name = "comments")
 public class Comment {
 
     @Column(name = "comment_id")
@@ -26,6 +27,6 @@ public class Comment {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 }

@@ -1,11 +1,10 @@
-package com.tentalk.domain;
+package com.tentalk.etc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,19 +12,20 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "users")
 public class User {
 
     @Column(name = "user_id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String uuid;
+    @Column(unique = true, nullable = false)
+    private String deviceId;
 
-    private LocalDateTime created_at;
+    private String nickname;
 
-    private LocalDateTime last_active;
-
-    private Boolean is_booked;
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime lastLoginAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
@@ -36,6 +36,6 @@ public class User {
     private List<Comment> comments= new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name="location_id")
-    private Location location;
+    @JoinColumn(name="userLocation_id")
+    private UserLocation userLocation;
 }
